@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 4db9a9199b9f8179cd3198fba46c3560644fe5f6 Musab Hassen <mushas1248@gmail.com> 1762031508 +0300	branch: Created from HEAD
+4db9a9199b9f8179cd3198fba46c3560644fe5f6 6e365fe353d9821c4b66aba2417893f55d18d415 Musab Hassen <mushas1248@gmail.com> 1762087414 +0300	commit: Updated auth, and admin dashboard
+6e365fe353d9821c4b66aba2417893f55d18d415 d150272440effe1eee82dafaa0040d86850e8c1d Musab Hassen <mushas1248@gmail.com> 1762088825 +0300	pull origin main --rebase (finish): refs/heads/dev onto 7548f3e284ca934e0c13f78e3f07b6b880d382e4
+d150272440effe1eee82dafaa0040d86850e8c1d 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762089396 +0300	reset: moving to origin/main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 878f6ba9906a2f29239fa5d859c2bf3a61ebae7d Musab Hassen <mushas1248@gmail.com> 1762093788 +0300	merge main: Merge made by the 'ort' strategy.

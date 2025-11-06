@@ -1,0 +1,24 @@
+0000000000000000000000000000000000000000 4db9a9199b9f8179cd3198fba46c3560644fe5f6 Musab Hassen <mushas1248@gmail.com> 1762029558 +0300	commit (initial): Initial frontend version or v0.1
+4db9a9199b9f8179cd3198fba46c3560644fe5f6 0000000000000000000000000000000000000000 Musab Hassen <mushas1248@gmail.com> 1762029720 +0300	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 4db9a9199b9f8179cd3198fba46c3560644fe5f6 Musab Hassen <mushas1248@gmail.com> 1762029720 +0300	Branch: renamed refs/heads/master to refs/heads/main
+4db9a9199b9f8179cd3198fba46c3560644fe5f6 4db9a9199b9f8179cd3198fba46c3560644fe5f6 Musab Hassen <mushas1248@gmail.com> 1762031508 +0300	checkout: moving from main to dev
+4db9a9199b9f8179cd3198fba46c3560644fe5f6 6e365fe353d9821c4b66aba2417893f55d18d415 Musab Hassen <mushas1248@gmail.com> 1762087414 +0300	commit: Updated auth, and admin dashboard
+6e365fe353d9821c4b66aba2417893f55d18d415 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762088825 +0300	pull origin main --rebase (start): checkout 7548f3e284ca934e0c13f78e3f07b6b880d382e4
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 d150272440effe1eee82dafaa0040d86850e8c1d Musab Hassen <mushas1248@gmail.com> 1762088825 +0300	pull origin main --rebase (pick): Updated auth, and admin dashboard
+d150272440effe1eee82dafaa0040d86850e8c1d d150272440effe1eee82dafaa0040d86850e8c1d Musab Hassen <mushas1248@gmail.com> 1762088825 +0300	pull origin main --rebase (finish): returning to refs/heads/dev
+d150272440effe1eee82dafaa0040d86850e8c1d 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762089396 +0300	reset: moving to origin/main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 4db9a9199b9f8179cd3198fba46c3560644fe5f6 Musab Hassen <mushas1248@gmail.com> 1762089559 +0300	checkout: moving from dev to main
+4db9a9199b9f8179cd3198fba46c3560644fe5f6 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762089561 +0300	reset: moving to origin/main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762089589 +0300	checkout: moving from main to dev
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762089657 +0300	reset: moving to main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 6e365fe353d9821c4b66aba2417893f55d18d415 Musab Hassen <mushas1248@gmail.com> 1762090433 +0300	checkout: moving from dev to 6e365fe
+6e365fe353d9821c4b66aba2417893f55d18d415 eb50805e2aa5780a7a2560f77d6e285b95c240cb Musab Hassen <mushas1248@gmail.com> 1762091731 +0300	commit: update auth, admin dashboard
+eb50805e2aa5780a7a2560f77d6e285b95c240cb 78459a319d1c280e443dae70f917604fea8d7b9c Musab Hassen <mushas1248@gmail.com> 1762091885 +0300	commit: update auth, admin dashboard
+78459a319d1c280e443dae70f917604fea8d7b9c 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762092097 +0300	checkout: moving from 78459a319d1c280e443dae70f917604fea8d7b9c to main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762092229 +0300	checkout: moving from main to 7548f3e
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 78459a319d1c280e443dae70f917604fea8d7b9c Musab Hassen <mushas1248@gmail.com> 1762092342 +0300	checkout: moving from 7548f3e284ca934e0c13f78e3f07b6b880d382e4 to 78459a3
+78459a319d1c280e443dae70f917604fea8d7b9c 78459a319d1c280e443dae70f917604fea8d7b9c Musab Hassen <mushas1248@gmail.com> 1762092950 +0300	checkout: moving from 78459a319d1c280e443dae70f917604fea8d7b9c to recovered-updates
+78459a319d1c280e443dae70f917604fea8d7b9c 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762093028 +0300	checkout: moving from recovered-updates to main
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 209c71e21f8762c29b16e99f19bd4ccd8ea4e6c4 Musab Hassen <mushas1248@gmail.com> 1762093486 +0300	commit (merge): Resolved README.md merge conflict after recovery
+209c71e21f8762c29b16e99f19bd4ccd8ea4e6c4 7548f3e284ca934e0c13f78e3f07b6b880d382e4 Musab Hassen <mushas1248@gmail.com> 1762093760 +0300	checkout: moving from main to dev
+7548f3e284ca934e0c13f78e3f07b6b880d382e4 878f6ba9906a2f29239fa5d859c2bf3a61ebae7d Musab Hassen <mushas1248@gmail.com> 1762093788 +0300	merge main: Merge made by the 'ort' strategy.

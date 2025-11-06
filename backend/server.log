@@ -1,0 +1,69 @@
+[dotenv@17.2.3] injecting env (7) from .env -- tip: ≡ƒöä add secrets lifecycle management: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ΓÜÖ∩╕Å  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ≡ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.2.3] injecting env (0) from .env -- tip: Γ£à audit secrets and track compliance: https://dotenvx.com/ops
+Γ£à Cloudinary configured: { cloud_name: 'doixitavq', api_key: '***', api_secret: '***' }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ΓÜÖ∩╕Å  suppress all logs with { quiet: true }
+Γ£à Decoded UploadThing token
+Γ£à UploadThing configured: {
+  api_key: '***09c9',
+  endpoint: 'https://api.uploadthing.com',
+  key_length: 72
+}
+Γ£à Profile upload directory exists: C:\MERN Stack\Murti-Guutoo-Student-Association\backend\uploads\profiles
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ≡ƒöæ add access controls to secrets: https://dotenvx.com/ops
+≡ƒÜÇ Server running on port 5000
+Γ£à MongoDB connected
+≡ƒôä File received: HU Math final 2014.pdf (application/pdf)
+
+≡ƒôñ ========== UPLOAD REQUEST ==========
+≡ƒæñ User: mushas1248@gmail.com
+≡ƒôï Body: {
+  title: 'HU Math final 2014',
+  course: 'Mathematics',
+  department: 'General'
+}
+≡ƒôä File details: {
+  originalName: 'HU Math final 2014.pdf',
+  size: '13.33 MB (13651.37 KB)',
+  mimeType: 'application/pdf',
+  buffer: '13979007 bytes'
+}
+≡ƒöì File type detected: pdf
+≡ƒôÄ File extension: pdf
+≡ƒôñ Using UploadThing for large file (>10MB)
+Γÿü∩╕Å Starting UploadThing upload...
+
+Γÿü∩╕Å ========== UPLOADTHING UPLOAD ==========
+≡ƒôä File: HU Math final 2014.pdf
+≡ƒôè Size: 13.33 MB
+≡ƒôï MIME: application/pdf
+≡ƒöæ Requesting presigned URL...
+Γ£à Presigned URL received
+≡ƒÜÇ Uploading file to presigned URL...
+Γ¥î UploadThing upload failed: Invalid URL
+Γ¥î Error name: TypeError
+Γ¥î Error code: ERR_INVALID_URL
+Γ¥î Full error stack: TypeError: Invalid URL
+    at new URL (node:internal/url:825:25)
+    at dispatchHttpRequest (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/adapters/http.js:408:20)
+    at file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/adapters/http.js:249:5
+    at new Promise (<anonymous>)
+    at wrapAsync (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/adapters/http.js:229:10)
+    at http (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/adapters/http.js:314:10)
+    at Axios.dispatchRequest (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/core/dispatchRequest.js:51:10)
+    at Axios._request (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/core/Axios.js:185:33)
+    at Axios.request (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/core/Axios.js:40:25)
+    at Axios.httpMethod [as put] (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/core/Axios.js:224:19)
+    at Axios.request (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/node_modules/axios/lib/core/Axios.js:45:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async uploadToUploadThing (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/config/uploadthing.js:83:5)
+    at async file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/routes/files.js:202:35
+Γ¥î Upload error: Error: UploadThing upload error: Invalid URL
+    at uploadToUploadThing (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/config/uploadthing.js:162:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/routes/files.js:202:35
+Error stack: Error: UploadThing upload error: Invalid URL
+    at uploadToUploadThing (file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/config/uploadthing.js:162:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///C:/MERN%20Stack/Murti-Guutoo-Student-Association/backend/routes/files.js:202:35

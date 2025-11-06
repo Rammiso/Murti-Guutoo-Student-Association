@@ -1,7 +1,10 @@
 import express from "express";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import { registerValidation, loginValidation } from "../middleware/validation.js";
+import {
+  registerValidation,
+  loginValidation,
+} from "../middleware/validation.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 dotenv.config();
@@ -15,9 +18,11 @@ router.post("/register", async (req, res) => {
     let {
       email,
       password,
+      studentId,
       fname,
-      lname ,
-      mname ,
+      lname,
+      mname,
+      phone,
       gender,
       zone,
       woreda,
@@ -29,22 +34,28 @@ router.post("/register", async (req, res) => {
 
     // Validation (adjust validation schema accordingly)
     const { error } = registerValidation(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
-
-    // Hash password
-    password = await bcrypt.hash(password, 10);
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
 
     // Check if user already exists
     const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Email already exists" });
+    if (exists)
+      return res.status(400).json({ message: "Email already exists" });
+
+    // Check if studentId already exists
+    const studentIdExists = await User.findOne({ studentId });
+    if (studentIdExists)
+      return res.status(400).json({ message: "Student ID already in use" });
 
     // Create new user
     const user = new User({
       email,
       password,
+      studentId,
       fname,
       lname,
       mname,
+      phone,
       gender,
       zone,
       woreda,
@@ -63,19 +74,33 @@ router.post("/register", async (req, res) => {
 });
 
 // Login
-router.post("/login", async (req,res)=>{
-   const { email,password } = req.body;
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
   try {
     const { error } = loginValidation(req.body);
-  if(error) return res.status(400).json({ message: error.details[0].message });
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
     const user = await User.findOne({ email });
-    if(!user) return res.status(400).json({ message:"Invalid credentials" });
-  const valid = await bcrypt.compare(password,user.password);
-  if(!valid) return res.status(400).json({ message: "Invalid password" });
-    const token = jwt.sign({ id:user._id }, process.env.JWT_SECRET, { expiresIn:"1d" });
-    res.json({ token, user:{ id:user._id, name:user.name,email:user.email,role:user.role } });
-  } 
-  catch(error){ res.status(500).json({ message:error.message }); }
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    const valid = await user.verifyPassword(password);
+    if (!valid) return res.status(400).json({ message: "Invalid password" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        fname: user.fname,
+        lname: user.lname,
+        email: user.email,
+        role: user.role,
+        mainAdmin: user.mainAdmin || false,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 router.get("/user/me", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
