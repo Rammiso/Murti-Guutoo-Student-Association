@@ -1,29 +1,31 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
-import cors from 'cors';
+import cors from "cors";
 
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import passwordRoutes from './routes/passwordRoutes.js';
+import passwordRoutes from "./routes/passwordRoutes.js";
 import resourceRoutes from "./routes/files.js";
-import profile from './routes/users.js';
-import contactRoutes from './routes/contacts.js';
+import profile from "./routes/users.js";
+import contactRoutes from "./routes/contacts.js";
 import galleryRoutes from "./routes/gallery.js";
-import { ensureMainAdmin } from './scripts/setMainAdmin.js';
+import { ensureMainAdmin } from "./scripts/setMainAdmin.js";
 
 dotenv.config();
 
 const app = express();
 
 // CORS configuration to allow credentials
-app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
-  credentials: true, // Allow credentials (cookies, authorization headers)
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL
+    credentials: true, // Allow credentials (cookies, authorization headers)
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
@@ -32,7 +34,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", passwordRoutes); // Password reset routes under /api/auth
 app.use("/api/admin", adminRoutes);
-app.use('/api/user', profile); 
+app.use("/api/user", profile);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/gallery", galleryRoutes);
@@ -45,7 +47,7 @@ const startServer = async () => {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
+    console.error("❌ Failed to start server:", error.message);
     process.exit(1);
   }
 };
