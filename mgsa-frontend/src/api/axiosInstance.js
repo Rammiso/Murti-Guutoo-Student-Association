@@ -3,10 +3,10 @@ import axios from "axios";
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
   // Development baseURL - change to production URL when deploying
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://murti-guutoo-student-association.onrender.com/api",
   // Production baseURL (uncomment when deploying):
   // baseURL: "https://api.mgsa.org",
-  
+
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,12 +18,12 @@ axiosInstance.interceptors.request.use(
   (config) => {
     // Get token from localStorage
     const token = localStorage.getItem("token");
-    
+
     // If token exists, add it to Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => {
@@ -71,7 +71,7 @@ axiosInstance.interceptors.response.use(
       // Something else happened
       console.error("Request error:", error.message);
     }
-    
+
     return Promise.reject(error);
   }
 );
