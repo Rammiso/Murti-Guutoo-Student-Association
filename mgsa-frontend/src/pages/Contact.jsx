@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth-context";
 import axios from "axios";
-import LeadershipTeam from "../Components/LeadershipTeam";
+import LeadershipTeam from "../components/LeadershipTeam";
 import LOGO from "../assets/logo-updated.png";
 
 const Contact = () => {
