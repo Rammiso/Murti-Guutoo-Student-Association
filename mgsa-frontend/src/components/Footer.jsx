@@ -198,14 +198,39 @@ const Footer = () => {
               </p>
               <p className="flex items-center justify-center gap-2 flex-wrap">
                 {[
-                  { name: "Musab Hassen", url: "https://portfolio-placeholder.com" },
-                  { name: "Yihune Belay", url: "https://portfolio-placeholder.com" },
-                  { name: "Ezedin Jemal", url: "https://portfolio-placeholder.com" },
-                  { name: "Sultan Adinan", url: "https://portfolio-placeholder.com" },
-                  { name: "Nadhi Amayu", url: "https://portfolio-placeholder.com" },
-                  { name: "Gifti Hussein", url: "https://portfolio-placeholder.com" },
+                  {
+                    name: "Musab Hassen",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Yihune Belay",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Ezedin Jemal",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Sultan Adinan",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Nadhi Jemal",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Gifti Hussein",
+                    url: "https://portfolio-placeholder.com",
+                  },
+                  {
+                    name: "Barento Hashum",
+                    url: "https://portfolio-placeholder.com",
+                  },
                 ].map((member, index, array) => (
-                  <span key={member.name} className="inline-flex items-center gap-2">
+                  <span
+                    key={member.name}
+                    className="inline-flex items-center gap-2"
+                  >
                     <motion.a
                       href={member.url}
                       target="_blank"

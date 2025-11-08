@@ -9,6 +9,7 @@ const navLinks = [
   { to: "/resources", label: "Resources" },
   { to: "/contact", label: "Contact" },
   { to: "/gallery", label: "Gallery" },
+  { to: "/payment", label: "Donation" },
 ];
 
 const Navbar = () => {
@@ -131,27 +132,45 @@ const Navbar = () => {
               {user ? (
                 <>
                   {isAdmin ? (
-                    <NavLink
-                      to="/admin"
-                      onClick={scrollToTop}
-                      className={({ isActive }) => {
-                        const active =
-                          isActive || location.pathname === "/admin";
-                        return [
-                          linkBase,
-                          active
-                            ? "text-[#22C55E] font-semibold"
-                            : "text-white/80 hover:text-[#22C55E]",
-                        ].join(" ");
-                      }}
-                    >
-                      <span className="inline-flex items-center gap-2">
-                        Admin Dashboard
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-white border border-[#22C55E]/30">
-                          Admin
+                    <>
+                      <NavLink
+                        to="/admin"
+                        onClick={scrollToTop}
+                        className={({ isActive }) => {
+                          const active =
+                            isActive || location.pathname === "/admin";
+                          return [
+                            linkBase,
+                            active
+                              ? "text-[#22C55E] font-semibold"
+                              : "text-white/80 hover:text-[#22C55E]",
+                          ].join(" ");
+                        }}
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          Admin Dashboard
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-white border border-[#22C55E]/30">
+                            Admin
+                          </span>
                         </span>
-                      </span>
-                    </NavLink>
+                      </NavLink>
+                      <NavLink
+                        to="/profile"
+                        onClick={scrollToTop}
+                        className={({ isActive }) => {
+                          const active =
+                            isActive || location.pathname === "/profile";
+                          return [
+                            linkBase,
+                            active
+                              ? "text-[#22C55E] font-semibold"
+                              : "text-white/80 hover:text-[#22C55E]",
+                          ].join(" ");
+                        }}
+                      >
+                        Profile
+                      </NavLink>
+                    </>
                   ) : (
                     <NavLink
                       to="/profile"
@@ -282,18 +301,27 @@ const Navbar = () => {
                     {user ? (
                       <>
                         {isAdmin ? (
-                          <Link
-                            to="/admin"
-                            onClick={() => setOpen(false)}
-                            className={`${linkBase}`}
-                          >
-                            <span className="inline-flex items-center gap-2">
-                              Admin Dashboard
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-white border border-[#22C55E]/30">
-                                Admin
+                          <>
+                            <Link
+                              to="/admin"
+                              onClick={() => setOpen(false)}
+                              className={`${linkBase}`}
+                            >
+                              <span className="inline-flex items-center gap-2">
+                                Admin Dashboard
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-white border border-[#22C55E]/30">
+                                  Admin
+                                </span>
                               </span>
-                            </span>
-                          </Link>
+                            </Link>
+                            <Link
+                              to="/profile"
+                              onClick={() => setOpen(false)}
+                              className={`${linkBase}`}
+                            >
+                              Profile
+                            </Link>
+                          </>
                         ) : (
                           <Link
                             to="/profile"

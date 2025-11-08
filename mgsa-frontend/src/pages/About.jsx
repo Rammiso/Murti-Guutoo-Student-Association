@@ -81,7 +81,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#0A0A0A] text-white overflow-hidden">
+    <div className="relative flex flex-col min-h-screen bg-[#0A0A0A] text-white overflow-x-hidden">
       {/* Animated particles background */}
       <canvas
         ref={canvasRef}
@@ -94,9 +94,9 @@ const About = () => {
       <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-[#22C55E]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-[#16A34A]/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 w-full">
         {/* Hero Banner */}
-        <section className="relative overflow-hidden">
+        <section className="relative overflow-hidden w-full">
           <div className="relative z-10">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
               <motion.div
@@ -131,7 +131,7 @@ const About = () => {
         </section>
 
         {/* Who We Are */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 w-full">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-6xl mx-auto">
               <motion.div
@@ -191,7 +191,7 @@ const About = () => {
         </section>
 
         {/* Our Mission & Vision */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 w-full">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
               <motion.h2
@@ -314,7 +314,7 @@ const About = () => {
 
         {/* Join Our Journey - Only show if user is not logged in */}
         {!user && (
-          <section className="py-14 md:py-20">
+          <section className="py-14 md:py-20 w-full">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-3xl mx-auto text-center">
                 <motion.h3
@@ -357,7 +357,7 @@ const About = () => {
           </section>
         )}
         {/* Our Leadership Team */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 w-full">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <motion.h3
@@ -468,7 +468,7 @@ const About = () => {
         </section>
 
         {/* Developer Team Section */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 w-full">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <motion.div

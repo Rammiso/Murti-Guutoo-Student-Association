@@ -18,10 +18,12 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMessages from "./pages/AdminMessages";
+import AdminDonationsPage from "./pages/AdminDonationsPage";
 import AccessDenied from "./pages/AccessDenied";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
+import Donation from "./pages/Donation";
 const AnimatedMain = () => {
   const location = useLocation();
   const [show, setShow] = useState(false);
@@ -50,6 +52,7 @@ const AnimatedMain = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/payment" element={<Donation />} />
 
           {/* Protected Routes */}
           <Route
@@ -97,6 +100,14 @@ const AnimatedMain = () => {
             element={
               <ProtectedRoute role="admin">
                 <AdminMessages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/donations"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDonationsPage />
               </ProtectedRoute>
             }
           />

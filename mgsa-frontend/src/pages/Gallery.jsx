@@ -499,13 +499,14 @@ const Gallery = () => {
                   />
                 </div>
 
-                {/* Bottom-centered title + date overlay: always visible, tight semi-transparent backgrounds */}
-                <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-1">
-                  <span className="inline-block bg-black/40 text-white px-3 py-1 rounded-md text-sm font-semibold backdrop-blur-sm shadow-sm">
+                {/* Bottom-centered title + date overlay: always visible, tight semi-transparent backgrounds // flex-row items-center*/}
+
+                <div className="absolute bottom-0 left-0 w-full flex justify-between items-center px-3 py-2 bg-gradient-to-t from-black/40 to-transparent z-20">
+                  <span className="bg-black/30 text-white text-sm font-semibold backdrop-blur-sm shadow-sm">
                     {item.title}
                   </span>
 
-                  <span className="inline-block bg-black/30 text-white/90 px-2 py-0.5 rounded-md text-xs backdrop-blur-sm shadow-sm">
+                  <span className="bg-black/30 text-white/90 text-xs backdrop-blur-sm shadow-sm">
                     {new Date(item.createdAt).toLocaleDateString()}
                   </span>
                 </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import * as XLSX from "xlsx";
@@ -23,12 +23,14 @@ import {
   ShieldOff,
   Mail,
   Trash2,
+  DollarSign,
 } from "lucide-react";
 import { useAuth } from "../context/auth-context";
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [tableSearchQuery, setTableSearchQuery] = useState("");
   const [filterYear, setFilterYear] = useState("");
@@ -41,6 +43,15 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard or settings
+
+  // Sync active tab from URL query param (?tab=dashboard|settings)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab === "settings" || tab === "dashboard") {
+      setActiveTab(tab);
+    }
+  }, [location.search]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedUser, setSearchedUser] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -515,6 +526,13 @@ const AdminDashboard = () => {
                 >
                   <Mail size={20} />
                   Messages
+                </button>
+                <button
+                  onClick={() => navigate("/admin/donations")}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-[#E0E0E0] hover:bg-[#22C55E]/10 hover:text-[#22C55E] transition-all"
+                >
+                  <DollarSign size={20} />
+                  Donations
                 </button>
                 <button
                   onClick={() => setActiveTab("settings")}

@@ -87,7 +87,7 @@ router.post(
   }
 );
 
-router.get("/", async (req, res) => {
+router.get("/",protect, async (req, res) => {
   try {
     const items = await Gallery.find()
       .sort({ createdAt: -1 })

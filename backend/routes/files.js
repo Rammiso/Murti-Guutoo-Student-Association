@@ -57,15 +57,22 @@ const getFileTypeCategory = (mimeType) => {
  * @param {string} mimeType - File MIME type
  * @returns {Promise<Object>} Cloudinary upload result
  */
-const uploadToCloudinary = (fileBuffer, originalName, folder = "mgsa_resources", mimeType = "") => {
+const uploadToCloudinary = (
+  fileBuffer,
+  originalName,
+  folder = "mgsa_resources",
+  mimeType = ""
+) => {
   return new Promise((resolve, reject) => {
     // Create unique public_id
-    const publicId = `${originalName.split(".")[0].replace(/[^a-zA-Z0-9-_]/g, "_")}-${Date.now()}`;
+    const publicId = `${originalName
+      .split(".")[0]
+      .replace(/[^a-zA-Z0-9-_]/g, "_")}-${Date.now()}`;
 
     // Determine resource_type based on MIME type
     // Use "raw" for documents, "image" for images, "video" for videos
     let resourceType = "raw"; // Default to raw for documents
-    
+
     if (mimeType.startsWith("image/")) {
       resourceType = "image";
     } else if (mimeType.startsWith("video/")) {
@@ -93,7 +100,13 @@ const uploadToCloudinary = (fileBuffer, originalName, folder = "mgsa_resources",
             http_code: error.http_code,
             name: error.name,
           });
-          reject(new Error(`Cloudinary upload failed: ${error.message || error.http_code || 'Unknown error'}`));
+          reject(
+            new Error(
+              `Cloudinary upload failed: ${
+                error.message || error.http_code || "Unknown error"
+              }`
+            )
+          );
         } else {
           console.log("✅ Cloudinary upload success:", {
             public_id: result.public_id,
@@ -132,173 +145,176 @@ const uploadToCloudinary = (fileBuffer, originalName, folder = "mgsa_resources",
  * @body {string} course - Course name (optional, default: General)
  * @body {string} department - Department name (optional, default: N/A)
  */
-router.post(
-  "/upload",
-  protect,
-  upload.single("file"),
-  async (req, res) => {
-    try {
-      console.log("\n📤 ========== UPLOAD REQUEST ==========");
-      console.log("👤 User:", req.user.email);
-      console.log("📋 Body:", {
-        title: req.body.title,
-        course: req.body.course,
-        department: req.body.department,
-      });
+router.post("/upload", protect, upload.single("file"), async (req, res) => {
+  try {
+    console.log("\n📤 ========== UPLOAD REQUEST ==========");
+    console.log("👤 User:", req.user.email);
+    console.log("📋 Body:", {
+      title: req.body.title,
+      course: req.body.course,
+      department: req.body.department,
+    });
 
-      // Validate file exists
-      if (!req.file) {
-        console.log("❌ No file in request");
-        return res.status(400).json({
-          success: false,
-          message: "No file uploaded. Please select a file.",
-        });
-      }
-
-      // Validate file size (10MB max)
-      const fileSizeMB = req.file.size / (1024 * 1024);
-      
-      if (fileSizeMB > 10) {
-        console.log(`❌ File too large: ${fileSizeMB.toFixed(2)} MB`);
-        return res.status(413).json({
-          success: false,
-          message: `File size (${fileSizeMB.toFixed(2)} MB) exceeds 10MB limit. Please use a smaller file.`,
-        });
-      }
-
-      console.log("📄 File details:", {
-        originalName: req.file.originalname,
-        size: `${fileSizeMB.toFixed(2)} MB (${(req.file.size / 1024).toFixed(2)} KB)`,
-        mimeType: req.file.mimetype,
-        buffer: `${req.file.buffer.length} bytes`,
-      });
-
-      // Extract file metadata
-      const fileExtension = req.file.originalname
-        .split(".")
-        .pop()
-        .toLowerCase();
-      const fileTypeCategory = getFileTypeCategory(req.file.mimetype);
-
-      console.log("🔍 File type detected:", fileTypeCategory);
-      console.log("📎 File extension:", fileExtension);
-
-      // Upload to Cloudinary
-      console.log("☁️ Starting Cloudinary upload...");
-      const cloudinaryResult = await uploadToCloudinary(
-        req.file.buffer,
-        req.file.originalname,
-        "mgsa_resources",
-        req.file.mimetype
-      );
-
-      console.log("✅ Cloudinary upload complete:", {
-        public_id: cloudinaryResult.public_id,
-        secure_url: cloudinaryResult.secure_url,
-        format: cloudinaryResult.format,
-        bytes: cloudinaryResult.bytes,
-      });
-
-      // Create Resource document with Cloudinary metadata
-      const resource = new Resource({
-        uploadedBy: req.user._id,
-        filename: cloudinaryResult.public_id,
-        originalName: req.file.originalname,
-        title: req.body.title || req.file.originalname.replace(/\.[^.]+$/, ""),
-        description: req.body.description || "",
-        filePath: cloudinaryResult.secure_url,
-        fileType: fileTypeCategory,
-        mimeType: req.file.mimetype,
-        fileExtension: fileExtension,
-        fileSize: cloudinaryResult.bytes || req.file.size,
-        course: req.body.course || "General",
-        department: req.body.department || "N/A",
-        storageProvider: "cloudinary",
-        approved: false,
-        downloads: 0,
-      });
-
-      await resource.save();
-
-      console.log(
-        `✅ Resource saved to MongoDB: ${resource.originalName} (ID: ${resource._id})`
-      );
-      console.log("========================================\n");
-
-      // Return success response
-      res.status(201).json({
-        success: true,
-        message: "File uploaded successfully to Cloudinary",
-        provider: "cloudinary",
-        file: {
-          _id: resource._id,
-          filename: resource.filename,
-          originalName: resource.originalName,
-          title: resource.title,
-          description: resource.description,
-          fileType: resource.fileType,
-          fileExtension: resource.fileExtension,
-          fileSize: resource.fileSize,
-          mimeType: resource.mimeType,
-          course: resource.course,
-          department: resource.department,
-          uploadedBy: {
-            _id: req.user._id,
-            fname: req.user.fname,
-            lname: req.user.lname,
-            email: req.user.email,
-          },
-          fileUrl: resource.filePath,
-          publicId: resource.filename,
-          storageProvider: "cloudinary",
-          createdAt: resource.createdAt,
-          approved: resource.approved,
-          downloads: resource.downloads,
-        },
-      });
-    } catch (err) {
-      console.error("❌ Upload error:", err);
-      console.error("Error stack:", err.stack);
-
-      // Handle specific errors
-      if (err.message && err.message.includes("Cloudinary")) {
-        if (err.message.includes("File size too large") || err.message.includes("413")) {
-          return res.status(413).json({
-            success: false,
-            message: "File size exceeds Cloudinary limit. Please use a smaller file.",
-          });
-        }
-        
-        if (err.message.includes("timeout") || err.message.includes("ETIMEDOUT")) {
-          return res.status(408).json({
-            success: false,
-            message: "Upload timeout. Please try again or use a smaller file.",
-          });
-        }
-
-        return res.status(500).json({
-          success: false,
-          message: `Cloudinary error: ${err.message}`,
-        });
-      }
-
-      if (err.message && err.message.includes("File too large")) {
-        return res.status(413).json({
-          success: false,
-          message: "File size exceeds 10MB limit",
-        });
-      }
-
-      res.status(500).json({
+    // Validate file exists
+    if (!req.file) {
+      console.log("❌ No file in request");
+      return res.status(400).json({
         success: false,
-        message: err.message || "Failed to upload file. Please try again.",
+        message: "No file uploaded. Please select a file.",
       });
     }
+
+    // Validate file size (10MB max)
+    const fileSizeMB = req.file.size / (1024 * 1024);
+
+    if (fileSizeMB > 10) {
+      console.log(`❌ File too large: ${fileSizeMB.toFixed(2)} MB`);
+      return res.status(413).json({
+        success: false,
+        message: `File size (${fileSizeMB.toFixed(
+          2
+        )} MB) exceeds 10MB limit. Please use a smaller file.`,
+      });
+    }
+
+    console.log("📄 File details:", {
+      originalName: req.file.originalname,
+      size: `${fileSizeMB.toFixed(2)} MB (${(req.file.size / 1024).toFixed(
+        2
+      )} KB)`,
+      mimeType: req.file.mimetype,
+      buffer: `${req.file.buffer.length} bytes`,
+    });
+
+    // Extract file metadata
+    const fileExtension = req.file.originalname.split(".").pop().toLowerCase();
+    const fileTypeCategory = getFileTypeCategory(req.file.mimetype);
+
+    console.log("🔍 File type detected:", fileTypeCategory);
+    console.log("📎 File extension:", fileExtension);
+
+    // Upload to Cloudinary
+    console.log("☁️ Starting Cloudinary upload...");
+    const cloudinaryResult = await uploadToCloudinary(
+      req.file.buffer,
+      req.file.originalname,
+      "mgsa_resources",
+      req.file.mimetype
+    );
+
+    console.log("✅ Cloudinary upload complete:", {
+      public_id: cloudinaryResult.public_id,
+      secure_url: cloudinaryResult.secure_url,
+      format: cloudinaryResult.format,
+      bytes: cloudinaryResult.bytes,
+    });
+
+    // Create Resource document with Cloudinary metadata
+    const resource = new Resource({
+      uploadedBy: req.user._id,
+      filename: cloudinaryResult.public_id,
+      originalName: req.file.originalname,
+      title: req.body.title || req.file.originalname.replace(/\.[^.]+$/, ""),
+      description: req.body.description || "",
+      filePath: cloudinaryResult.secure_url,
+      fileType: fileTypeCategory,
+      mimeType: req.file.mimetype,
+      fileExtension: fileExtension,
+      fileSize: cloudinaryResult.bytes || req.file.size,
+      course: req.body.course || "General",
+      department: req.body.department || "N/A",
+      storageProvider: "cloudinary",
+      approved: false,
+      downloads: 0,
+    });
+
+    await resource.save();
+
+    console.log(
+      `✅ Resource saved to MongoDB: ${resource.originalName} (ID: ${resource._id})`
+    );
+    console.log("========================================\n");
+
+    // Return success response
+    res.status(201).json({
+      success: true,
+      message: "File uploaded successfully to Cloudinary",
+      provider: "cloudinary",
+      file: {
+        _id: resource._id,
+        filename: resource.filename,
+        originalName: resource.originalName,
+        title: resource.title,
+        description: resource.description,
+        fileType: resource.fileType,
+        fileExtension: resource.fileExtension,
+        fileSize: resource.fileSize,
+        mimeType: resource.mimeType,
+        course: resource.course,
+        department: resource.department,
+        uploadedBy: {
+          _id: req.user._id,
+          fname: req.user.fname,
+          lname: req.user.lname,
+          email: req.user.email,
+        },
+        fileUrl: resource.filePath,
+        publicId: resource.filename,
+        storageProvider: "cloudinary",
+        createdAt: resource.createdAt,
+        approved: resource.approved,
+        downloads: resource.downloads,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    console.error("Error stack:", err.stack);
+
+    // Handle specific errors
+    if (err.message && err.message.includes("Cloudinary")) {
+      if (
+        err.message.includes("File size too large") ||
+        err.message.includes("413")
+      ) {
+        return res.status(413).json({
+          success: false,
+          message:
+            "File size exceeds Cloudinary limit. Please use a smaller file.",
+        });
+      }
+
+      if (
+        err.message.includes("timeout") ||
+        err.message.includes("ETIMEDOUT")
+      ) {
+        return res.status(408).json({
+          success: false,
+          message: "Upload timeout. Please try again or use a smaller file.",
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: `Cloudinary error: ${err.message}`,
+      });
+    }
+
+    if (err.message && err.message.includes("File too large")) {
+      return res.status(413).json({
+        success: false,
+        message: "File size exceeds 10MB limit",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: err.message || "Failed to upload file. Please try again.",
+    });
   }
-);
+});
 
 // ✅ GET ALL FILES
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
     const { course, department, fileType, approved } = req.query;
     const filter = {};
@@ -357,14 +373,19 @@ router.get("/download/:id", protect, async (req, res) => {
     // Fix URL for non-image files (PDFs, docs, etc.)
     // Old uploads might have /image/upload/ but need special handling
     let downloadUrl = resource.filePath;
-    
-    if (!resource.mimeType.startsWith("image/") && downloadUrl.includes("/image/upload/")) {
+
+    if (
+      !resource.mimeType.startsWith("image/") &&
+      downloadUrl.includes("/image/upload/")
+    ) {
       // For files incorrectly uploaded as images, use fl_attachment flag
       // This forces download instead of display
       const parts = downloadUrl.split("/upload/");
       if (parts.length === 2) {
         downloadUrl = `${parts[0]}/upload/fl_attachment/${parts[1]}`;
-        console.log(`🔧 Added download flag for non-image file: ${downloadUrl}`);
+        console.log(
+          `🔧 Added download flag for non-image file: ${downloadUrl}`
+        );
       }
     }
 

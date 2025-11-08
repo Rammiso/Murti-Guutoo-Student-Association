@@ -11,6 +11,7 @@ import resourceRoutes from "./routes/files.js";
 import profile from "./routes/users.js";
 import contactRoutes from "./routes/contacts.js";
 import galleryRoutes from "./routes/gallery.js";
+import paymentRoutes from "./routes/payments.js";
 import { ensureMainAdmin } from "./scripts/setMainAdmin.js";
 
 dotenv.config();
@@ -53,7 +54,7 @@ app.use(
 //   })
 // );
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" })); // Increased limit for payment screenshots
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // Example: Express
 
@@ -64,6 +65,7 @@ app.use("/api/user", profile);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/gallery", galleryRoutes);
+app.use("/api/payments", paymentRoutes);
 
 const startServer = async () => {
   try {
