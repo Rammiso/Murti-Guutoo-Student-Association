@@ -19,8 +19,6 @@ const app = express();
 
 // CORS configuration to allow credentials
 
-import cors from "cors";
-
 const allowedOrigins = [
   "http://localhost:5173",
   "https://murti-guutoo-student-association-ze.vercel.app",
