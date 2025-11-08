@@ -50,7 +50,7 @@ const AdminDonations = () => {
   // Fetch statistics
   const fetchStats = useCallback(async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/api/payments/stats`, {
+      const { data } = await axios.get(`${API_URL}/payments/stats`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setStats(data.data);
@@ -219,9 +219,7 @@ const AdminDonations = () => {
                   <Mail size={20} />
                   Messages
                 </button>
-                <button
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                >
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
                   <DollarSign size={20} />
                   Donations
                 </button>
@@ -249,7 +247,9 @@ const AdminDonations = () => {
 
       {/* Main wrapper */}
       <div
-        className={`transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "ml-0"}`}
+        className={`transition-all duration-300 ${
+          sidebarOpen ? "lg:ml-64" : "ml-0"
+        }`}
       >
         {/* Header */}
         <header className="sticky top-0 z-40 bg-[#0F172A]/90 backdrop-blur-sm border-b border-emerald-500/20">
@@ -263,14 +263,18 @@ const AdminDonations = () => {
                   <Menu size={24} />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">Donation Management</h1>
+                  <h1 className="text-2xl font-bold text-white">
+                    Donation Management
+                  </h1>
                   <p className="text-sm text-gray-400">
                     View, verify, and manage all donation submissions
                   </p>
                 </div>
               </div>
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-white">{user?.fname} {user?.lname}</p>
+                <p className="text-sm font-medium text-white">
+                  {user?.fname} {user?.lname}
+                </p>
                 <p className="text-xs text-emerald-400">{user?.role}</p>
               </div>
             </div>
@@ -515,7 +519,10 @@ const AdminDonations = () => {
                         Previous
                       </button>
                       <div className="flex items-center gap-2">
-                        {Array.from({ length: pagination.pages }, (_, i) => i + 1)
+                        {Array.from(
+                          { length: pagination.pages },
+                          (_, i) => i + 1
+                        )
                           .filter(
                             (p) =>
                               p === 1 ||
