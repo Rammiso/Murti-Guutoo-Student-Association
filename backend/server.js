@@ -18,14 +18,42 @@ dotenv.config();
 const app = express();
 
 // CORS configuration to allow credentials
+
+import cors from "cors";
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://murti-guutoo-student-association-ze.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
-    credentials: true, // Allow credentials (cookies, authorization headers)
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like Postman or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://murti-guutoo-student-association-ze.vercel.app", // your deployed frontend https://murti-guutoo-student-association-ze.vercel.app/
+// ];
+// app.use(
+//   cors({
+//     origin: allowedOrigins, // Frontend URL
+//     credentials: true, // Allow credentials (cookies, authorization headers)
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
