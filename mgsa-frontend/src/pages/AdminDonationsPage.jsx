@@ -64,7 +64,7 @@ const AdminDonations = () => {
   const fetchPayments = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${API_URL}/api/payments`, {
+      const { data } = await axios.get(`${API_URL}/payments`, {
         params: {
           status: filter === "all" ? undefined : filter,
           search: search || undefined,
@@ -88,7 +88,7 @@ const AdminDonations = () => {
     setActionLoading(true);
     try {
       await axios.put(
-        `${API_URL}/api/payments/${id}/verify`,
+        `${API_URL}/payments/${id}/verify`,
         { notes },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -115,7 +115,7 @@ const AdminDonations = () => {
     setActionLoading(true);
     try {
       await axios.put(
-        `${API_URL}/api/payments/${id}/reject`,
+        `${API_URL}/payments/${id}/reject`,
         { reason: reason.trim() },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -142,7 +142,7 @@ const AdminDonations = () => {
 
     setActionLoading(true);
     try {
-      await axios.delete(`${API_URL}/api/payments/${id}`, {
+      await axios.delete(`${API_URL}/payments/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       toast.success("Payment deleted successfully");
@@ -160,7 +160,7 @@ const AdminDonations = () => {
   // View payment details
   const viewPayment = async (id) => {
     try {
-      const { data } = await axios.get(`${API_URL}/api/payments/${id}`, {
+      const { data } = await axios.get(`${API_URL}/payments/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setSelectedPayment(data.data);
