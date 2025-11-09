@@ -27,6 +27,8 @@ import ABDUNASIR from "../assets/Profile_Pictures/abdunasir.png";
 import YONAS from "../assets/Profile_Pictures/abel.png";
 import NADHI from "../assets/Profile_Pictures/Nadhi.jpg";
 import YIHUNE from "../assets/Profile_Pictures/Yihune.jpg";
+import SULTAN from "../assets/Profile_Pictures/Sultan.jpg";
+import EZEDIN from "../assets/Profile_Pictures/Ezedin.jpg";
 const About = () => {
   const { user } = useAuth();
   const canvasRef = useRef(null);
@@ -508,13 +510,13 @@ const About = () => {
                 {
                   name: "Ezedin Jemal",
                   role: "Frontend & Backend Developer",
-                  photo: "https://i.pravatar.cc/300?img=1",
+                  photo: EZEDIN,
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
                   name: "Sultan Adinan",
                   role: "Frontend & Backend Developer",
-                  photo: "https://i.pravatar.cc/300?img=52",
+                  photo: SULTAN,
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
