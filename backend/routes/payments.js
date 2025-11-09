@@ -2,6 +2,7 @@ import express from "express";
 import Payment from "../models/Payment.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
+import { parse } from "json2csv";
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
 // ============================================
 
 /**
- * @route   POST /api/payments/submit
+ * @route   POST /payments/submit
  * @desc    Submit a new payment with screenshot
  * @access  Public
  */
@@ -74,7 +75,7 @@ router.post("/submit", async (req, res) => {
       description,
       screenshotUrl: uploadedScreenshot.secure_url,
       screenshotPublicId: uploadedScreenshot.public_id,
-      amount: amount || 0,
+      amount: Number(amount) || 0, // Ensure amount is a number
       paymentType: paymentType || "donation",
       submittedBy: req.user?._id, // If user is authenticated
     });
@@ -84,11 +85,11 @@ router.post("/submit", async (req, res) => {
     // Return success response
     res.status(201).json({
       success: true,
-      message: "Payment submitted successfully! We will verify it soon.",
+      message:
+        "Payment submitted successfully! Thank you for your contribution.",
       data: {
         id: payment._id,
         fullName: payment.fullName,
-        status: payment.status,
         createdAt: payment.createdAt,
       },
     });
@@ -107,7 +108,7 @@ router.post("/submit", async (req, res) => {
 // ============================================
 
 /**
- * @route   GET /api/payments
+ * @route   GET /payments
  * @desc    Get all payments with filters and pagination
  * @access  Admin
  */
@@ -144,7 +145,6 @@ router.get("/", protect, isAdmin, async (req, res) => {
       .sort({ [sortBy]: sortOrder })
       .limit(parseInt(limit))
       .skip(skip)
-      .populate("verifiedBy", "name email")
       .populate("submittedBy", "name email");
 
     // Get total count
@@ -171,7 +171,7 @@ router.get("/", protect, isAdmin, async (req, res) => {
 });
 
 /**
- * @route   GET /api/payments/stats
+ * @route   GET /payments/stats
  * @desc    Get payment statistics
  * @access  Admin
  */
@@ -213,15 +213,76 @@ router.get("/stats", protect, isAdmin, async (req, res) => {
 });
 
 /**
- * @route   GET /api/payments/:id
+ * @route   GET /payments/export
+ * @desc    Export all payments as CSV
+ * @access  Admin
+ */
+router.get("/export", protect, isAdmin, async (req, res) => {
+  try {
+    console.log("📥 Export request received from admin");
+
+    // Fetch all payments
+    const payments = await Payment.find({})
+      .sort({ createdAt: -1 })
+      .select("fullName description amount paymentType createdAt")
+      .lean();
+
+    console.log(`📊 Found ${payments.length} donations to export`);
+
+    // Handle empty collection
+    if (payments.length === 0) {
+      return res.status(200).send("No donations found to export.");
+    }
+
+    // Transform data for CSV with safe field handling
+    const csvData = payments.map((p) => ({
+      "Full Name": p.fullName || "",
+      "Description": p.description || "",
+      "Amount": (() => {
+        const amt = Number(p.amount ?? 0);
+        return isNaN(amt) ? 0 : amt;
+      })(),
+      "Payment Type": p.paymentType || "donation",
+      "Created At": (() => {
+        try {
+          return p.createdAt ? new Date(p.createdAt).toLocaleString() : "";
+        } catch (e) {
+          return "";
+        }
+      })(),
+    }));
+
+    // Generate CSV using parse function
+    const csv = parse(csvData);
+
+    console.log("✅ CSV generated successfully");
+
+    // Set headers and send file
+    res.header("Content-Type", "text/csv; charset=utf-8");
+    res.attachment("donations.csv");
+    return res.status(200).send(csv);
+  } catch (error) {
+    console.error("❌ Export CSV error:", error);
+    console.error("Error stack:", error.stack);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to export donations",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @route   GET /payments/:id
  * @desc    Get single payment details
  * @access  Admin
  */
 router.get("/:id", protect, isAdmin, async (req, res) => {
   try {
-    const payment = await Payment.findById(req.params.id)
-      .populate("verifiedBy", "name email role")
-      .populate("submittedBy", "name email");
+    const payment = await Payment.findById(req.params.id).populate(
+      "submittedBy",
+      "name email"
+    );
 
     if (!payment) {
       return res.status(404).json({
@@ -346,7 +407,7 @@ router.get("/:id", protect, isAdmin, async (req, res) => {
 // });
 
 /**
- * @route   DELETE /api/payments/:id
+ * @route   DELETE /payments/:id
  * @desc    Delete a payment (and its screenshot from Cloudinary)
  * @access  Admin
  */
@@ -391,7 +452,7 @@ router.delete("/:id", protect, isAdmin, async (req, res) => {
 });
 
 /**
- * @route   PUT /api/payments/:id/notes
+ * @route   PUT /payments/:id/notes
  * @desc    Update payment notes
  * @access  Admin
  */

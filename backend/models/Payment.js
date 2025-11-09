@@ -50,27 +50,6 @@ const paymentSchema = new mongoose.Schema(
       enum: ["donation", "membership", "event", "other"],
     },
 
-    // Status
-    status: {
-      type: String,
-      enum: ["pending", "verified", "rejected"],
-      default: "pending",
-    },
-
-    // Verification Info
-    verifiedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-
-    verifiedAt: {
-      type: Date,
-    },
-
-    rejectionReason: {
-      type: String,
-    },
-
     // Admin Notes
     notes: {
       type: String,
@@ -88,62 +67,39 @@ const paymentSchema = new mongoose.Schema(
 );
 
 // Indexes for faster queries
-paymentSchema.index({ status: 1, createdAt: -1 });
 paymentSchema.index({ fullName: 1 });
 paymentSchema.index({ createdAt: -1 });
-paymentSchema.index({ verifiedBy: 1 });
 
 // Virtual for payment age
 paymentSchema.virtual("age").get(function () {
   return Math.floor((Date.now() - this.createdAt) / (1000 * 60 * 60 * 24)); // days
 });
 
-// Method to verify payment
-paymentSchema.methods.verify = async function (adminId) {
-  this.status = "verified";
-  this.verifiedBy = adminId;
-  this.verifiedAt = new Date();
-  return await this.save();
-};
-
-// Method to reject payment
-paymentSchema.methods.reject = async function (reason) {
-  this.status = "rejected";
-  this.rejectionReason = reason;
-  return await this.save();
-};
-
 // Static method to get statistics
 paymentSchema.statics.getStats = async function () {
-  const stats = await this.aggregate([
+  const total = await this.countDocuments();
+  const totalAmountAgg = await this.aggregate([
     {
       $group: {
-        _id: "$status",
-        count: { $sum: 1 },
-        totalAmount: { $sum: "$amount" },
+        _id: null,
+        sum: {
+          $sum: {
+            $convert: {
+              input: "$amount",
+              to: "double",
+              onError: 0,
+              onNull: 0,
+            },
+          },
+        },
       },
     },
   ]);
 
-  const result = {
-    totalPending: 0,
-    totalVerified: 0,
-    totalRejected: 0,
-    total: 0,
-    totalAmountVerified: 0,
+  return {
+    total,
+    totalAmount: totalAmountAgg[0]?.sum || 0,
   };
-
-  stats.forEach((stat) => {
-    if (stat._id === "pending") result.totalPending = stat.count;
-    if (stat._id === "verified") {
-      result.totalVerified = stat.count;
-      result.totalAmountVerified = stat.totalAmount;
-    }
-    if (stat._id === "rejected") result.totalRejected = stat.count;
-    result.total += stat.count;
-  });
-
-  return result;
 };
 
 const Payment = mongoose.model("Payment", paymentSchema);

@@ -65,6 +65,8 @@ app.use("/api/user", profile);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/gallery", galleryRoutes);
+// Mount payments on both paths for compatibility (/payments preferred)
+app.use("/payments", paymentRoutes);
 app.use("/api/payments", paymentRoutes);
 
 const startServer = async () => {

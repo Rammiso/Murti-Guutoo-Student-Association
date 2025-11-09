@@ -4,16 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import {
-  CheckCircle,
-  XCircle,
   Eye,
   Trash2,
-  Filter,
   Search,
   Download,
   DollarSign,
-  Clock,
-  Users,
   X,
   AlertCircle,
   Calendar,
@@ -24,8 +19,10 @@ import {
   Mail,
   LogOut,
   Settings,
+  User,
 } from "lucide-react";
 import { useAuth } from "../context/auth-context";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const AdminDonations = () => {
   const navigate = useNavigate();
@@ -33,19 +30,79 @@ const AdminDonations = () => {
   const [payments, setPayments] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // Get token from localStorage
   const getToken = () => localStorage.getItem("token");
+
+  // Export donations as CSV
+  const exportDonations = useCallback(async () => {
+    if (exportLoading) return;
+
+    setExportLoading(true);
+    try {
+      const url = `${API_URL}/payments/export`;
+      const response = await axios.get(url, {
+        responseType: "blob",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
+      const contentType = response.headers?.["content-type"] || "";
+
+      // Check if response is JSON (error message)
+      if (contentType.includes("application/json")) {
+        const text = await response.data.text();
+        try {
+          const json = JSON.parse(text);
+          if (json.message === "No donations found to export") {
+            toast.info(json.message);
+            return;
+          }
+          throw new Error(json?.message || "Export failed");
+        } catch (e) {
+          throw new Error(e.message || "Export failed");
+        }
+      }
+
+      // Extract filename from headers
+      const disposition = response.headers?.["content-disposition"] || "";
+      const match = disposition.match(/filename="?([^";]+)"?/i);
+      const filename = match ? match[1] : "donations.csv";
+
+      // Create and trigger download
+      const blob = new Blob([response.data], {
+        type: "text/csv;charset=utf-8;",
+      });
+      const urlObject = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = urlObject;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(urlObject);
+
+      toast.success("✅ Donations exported successfully");
+    } catch (error) {
+      console.error("Export failed:", error);
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Export failed. Please try again or check server logs.";
+      toast.error(errorMsg);
+    } finally {
+      setExportLoading(false);
+    }
+  }, [API_URL, exportLoading]);
 
   // Fetch statistics
   const fetchStats = useCallback(async () => {
@@ -66,7 +123,6 @@ const AdminDonations = () => {
     try {
       const { data } = await axios.get(`${API_URL}/payments`, {
         params: {
-          status: filter === "all" ? undefined : filter,
           search: search || undefined,
           page,
           limit: 20,
@@ -81,61 +137,13 @@ const AdminDonations = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL, filter, search, page]);
-
-  // Verify payment
-  const handleVerify = async (id, notes = "") => {
-    setActionLoading(true);
-    try {
-      await axios.put(
-        `${API_URL}/payments/${id}/verify`,
-        { notes },
-        { headers: { Authorization: `Bearer ${getToken()}` } }
-      );
-      toast.success("Payment verified successfully! 🎉");
-      fetchPayments();
-      fetchStats();
-      setShowModal(false);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to verify payment");
-      console.error(error);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  // Reject payment
-  const handleReject = async (id) => {
-    const reason = prompt("Enter rejection reason:");
-    if (!reason || reason.trim() === "") {
-      toast.error("Rejection reason is required");
-      return;
-    }
-
-    setActionLoading(true);
-    try {
-      await axios.put(
-        `${API_URL}/payments/${id}/reject`,
-        { reason: reason.trim() },
-        { headers: { Authorization: `Bearer ${getToken()}` } }
-      );
-      toast.success("Payment rejected");
-      fetchPayments();
-      fetchStats();
-      setShowModal(false);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to reject payment");
-      console.error(error);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  }, [API_URL, search, page]);
 
   // Delete payment
   const handleDelete = async (id) => {
     if (
       !confirm(
-        "Are you sure you want to delete this payment? This action cannot be undone."
+        "Are you sure you want to delete this donation? This action cannot be undone."
       )
     )
       return;
@@ -145,12 +153,12 @@ const AdminDonations = () => {
       await axios.delete(`${API_URL}/payments/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      toast.success("Payment deleted successfully");
+      toast.success("Donation deleted successfully");
       fetchPayments();
       fetchStats();
       setShowModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete payment");
+      toast.error(error.response?.data?.message || "Failed to delete donation");
       console.error(error);
     } finally {
       setActionLoading(false);
@@ -166,7 +174,7 @@ const AdminDonations = () => {
       setSelectedPayment(data.data);
       setShowModal(true);
     } catch (error) {
-      toast.error("Failed to load payment details");
+      toast.error("Failed to load donation details");
       console.error(error);
     }
   };
@@ -288,7 +296,7 @@ const AdminDonations = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
             >
               <StatCard
                 icon={<DollarSign className="w-6 h-6" />}
@@ -298,30 +306,16 @@ const AdminDonations = () => {
                 delay={0.1}
               />
               <StatCard
-                icon={<Clock className="w-6 h-6" />}
-                title="Pending"
-                value={stats.totalPending}
-                color="from-yellow-500 to-orange-500"
+                icon={<DollarSign className="w-6 h-6" />}
+                title="Total Amount"
+                value={`${(stats.totalAmount || 0).toLocaleString()} ETB`}
+                color="from-emerald-500 to-green-500"
                 delay={0.2}
-              />
-              <StatCard
-                icon={<CheckCircle className="w-6 h-6" />}
-                title="Verified"
-                value={stats.totalVerified}
-                color="from-green-500 to-emerald-500"
-                delay={0.3}
-              />
-              <StatCard
-                icon={<XCircle className="w-6 h-6" />}
-                title="Rejected"
-                value={stats.totalRejected}
-                color="from-red-500 to-pink-500"
-                delay={0.4}
               />
             </motion.div>
           )}
 
-          {/* Filters & Search */}
+          {/* Search & Export */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -329,24 +323,6 @@ const AdminDonations = () => {
             className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 mb-6 shadow-[0_0_40px_rgba(0,255,255,0.1)]"
           >
             <div className="flex flex-col md:flex-row gap-4">
-              {/* Status Filter */}
-              <div className="flex items-center gap-3 flex-1">
-                <Filter className="w-5 h-5 text-cyan-400" />
-                <select
-                  value={filter}
-                  onChange={(e) => {
-                    setFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  className="flex-1 px-4 py-3 bg-[#0b1322]/60 border border-cyan-500/30 rounded-xl focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,255,255,0.3)] outline-none text-white transition"
-                >
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="verified">Verified</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
-
               {/* Search */}
               <div className="flex items-center gap-3 flex-1">
                 <Search className="w-5 h-5 text-cyan-400" />
@@ -364,11 +340,23 @@ const AdminDonations = () => {
 
               {/* Export Button */}
               <button
-                onClick={() => toast.success("Export feature coming soon!")}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl font-medium hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all duration-300"
+                onClick={exportDonations}
+                disabled={exportLoading}
+                className={`flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-400 hover:to-blue-500 rounded-xl font-medium text-white hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all duration-300 ${
+                  exportLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                <Download className="w-5 h-5" />
-                Export
+                {exportLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Exporting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5" />
+                    Export Donations
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
@@ -388,11 +376,9 @@ const AdminDonations = () => {
             ) : payments.length === 0 ? (
               <div className="p-12 text-center">
                 <AlertCircle className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                <p className="text-gray-400 text-lg">No payments found</p>
+                <p className="text-gray-400 text-lg">No donations found</p>
                 <p className="text-gray-500 text-sm mt-2">
-                  {filter !== "all"
-                    ? `No ${filter} payments at the moment`
-                    : "No donations have been submitted yet"}
+                  No donations have been submitted yet
                 </p>
               </div>
             ) : (
@@ -409,9 +395,6 @@ const AdminDonations = () => {
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-cyan-400 uppercase tracking-wider">
                           Amount
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                          Status
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-cyan-400 uppercase tracking-wider">
                           Date
@@ -449,13 +432,10 @@ const AdminDonations = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="text-emerald-400 font-semibold">
-                              {payment.amount > 0
+                              {payment.amount && payment.amount > 0
                                 ? `${payment.amount.toLocaleString()} ETB`
                                 : "N/A"}
                             </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <StatusBadge status={payment.status} />
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-gray-400">
                             {new Date(payment.createdAt).toLocaleDateString()}
@@ -469,24 +449,6 @@ const AdminDonations = () => {
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
-                              {payment.status === "pending" && (
-                                <>
-                                  <button
-                                    onClick={() => handleVerify(payment._id)}
-                                    className="p-2 text-green-400 hover:bg-green-500/10 rounded-lg transition"
-                                    title="Verify"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleReject(payment._id)}
-                                    className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition"
-                                    title="Reject"
-                                  >
-                                    <XCircle className="w-4 h-4" />
-                                  </button>
-                                </>
-                              )}
                               <button
                                 onClick={() => handleDelete(payment._id)}
                                 className="p-2 text-gray-400 hover:bg-gray-500/10 rounded-lg transition"
@@ -567,8 +529,6 @@ const AdminDonations = () => {
               <PaymentModal
                 payment={selectedPayment}
                 onClose={() => setShowModal(false)}
-                onVerify={handleVerify}
-                onReject={handleReject}
                 onDelete={handleDelete}
                 actionLoading={actionLoading}
               />
@@ -598,46 +558,8 @@ const StatCard = ({ icon, title, value, color, delay }) => (
   </motion.div>
 );
 
-// Status Badge Component
-const StatusBadge = ({ status }) => {
-  const styles = {
-    pending: {
-      bg: "bg-yellow-500/20",
-      text: "text-yellow-400",
-      border: "border-yellow-500/30",
-    },
-    verified: {
-      bg: "bg-green-500/20",
-      text: "text-green-400",
-      border: "border-green-500/30",
-    },
-    rejected: {
-      bg: "bg-red-500/20",
-      text: "text-red-400",
-      border: "border-red-500/30",
-    },
-  };
-
-  const style = styles[status] || styles.pending;
-
-  return (
-    <span
-      className={`px-3 py-1 text-xs font-semibold rounded-full border ${style.bg} ${style.text} ${style.border}`}
-    >
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  );
-};
-
 // Payment Modal Component
-const PaymentModal = ({
-  payment,
-  onClose,
-  onVerify,
-  onReject,
-  onDelete,
-  actionLoading,
-}) => {
+const PaymentModal = ({ payment, onClose, onDelete, actionLoading }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -657,7 +579,7 @@ const PaymentModal = ({
         <div className="sticky top-0 bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/10 p-6 flex justify-between items-start z-10">
           <div>
             <h2 className="text-2xl font-bold text-cyan-400 mb-1">
-              Payment Details
+              Donation Details
             </h2>
             <p className="text-gray-400 text-sm">
               ID: {payment._id.substring(0, 8)}...
@@ -676,7 +598,7 @@ const PaymentModal = ({
           {/* Donor Info */}
           <div className="bg-white/5 rounded-xl p-5 border border-white/10">
             <div className="flex items-center gap-3 mb-4">
-              <Users className="w-5 h-5 text-cyan-400" />
+              <User className="w-5 h-5 text-cyan-400" />
               <h3 className="text-lg font-semibold text-white">
                 Donor Information
               </h3>
@@ -704,21 +626,13 @@ const PaymentModal = ({
                 <label className="text-sm text-gray-400">Description</label>
                 <p className="text-white mt-1">{payment.description}</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-400">Amount</label>
-                  <p className="text-2xl font-bold text-emerald-400 mt-1">
-                    {payment.amount > 0
-                      ? `${payment.amount.toLocaleString()} ETB`
-                      : "Not specified"}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">Status</label>
-                  <div className="mt-1">
-                    <StatusBadge status={payment.status} />
-                  </div>
-                </div>
+              <div>
+                <label className="text-sm text-gray-400">Amount</label>
+                <p className="text-2xl font-bold text-emerald-400 mt-1">
+                  {payment.amount && payment.amount > 0
+                    ? `${payment.amount.toLocaleString()} ETB`
+                    : "Not specified"}
+                </p>
               </div>
               <div>
                 <label className="text-sm text-gray-400 flex items-center gap-2">
@@ -749,74 +663,32 @@ const PaymentModal = ({
             </div>
           </div>
 
-          {/* Verification Info */}
-          {payment.status !== "pending" && (
+          {/* Admin Notes */}
+          {payment.notes && (
             <div className="bg-white/5 rounded-xl p-5 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-4">
-                {payment.status === "verified"
-                  ? "Verification Details"
-                  : "Rejection Details"}
+                Admin Notes
               </h3>
-              <div className="space-y-3">
-                {payment.verifiedAt && (
-                  <div>
-                    <label className="text-sm text-gray-400">
-                      {payment.status === "verified" ? "Verified" : "Rejected"}{" "}
-                      At
-                    </label>
-                    <p className="text-white">
-                      {new Date(payment.verifiedAt).toLocaleString()}
-                    </p>
-                  </div>
-                )}
-                {payment.rejectionReason && (
-                  <div>
-                    <label className="text-sm text-gray-400">Reason</label>
-                    <p className="text-red-400 mt-1">
-                      {payment.rejectionReason}
-                    </p>
-                  </div>
-                )}
-                {payment.notes && (
-                  <div>
-                    <label className="text-sm text-gray-400">Admin Notes</label>
-                    <p className="text-white mt-1">{payment.notes}</p>
-                  </div>
-                )}
-              </div>
+              <p className="text-white">{payment.notes}</p>
             </div>
           )}
         </div>
 
         {/* Actions */}
         <div className="sticky bottom-0 bg-[#0f172a]/95 backdrop-blur-xl border-t border-white/10 p-6 flex gap-3">
-          {payment.status === "pending" && (
-            <>
-              <button
-                onClick={() => onVerify(payment._id)}
-                disabled={actionLoading}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-semibold hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <CheckCircle className="w-5 h-5" />
-                {actionLoading ? "Processing..." : "Verify Payment"}
-              </button>
-              <button
-                onClick={() => onReject(payment._id)}
-                disabled={actionLoading}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl font-semibold hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <XCircle className="w-5 h-5" />
-                {actionLoading ? "Processing..." : "Reject Payment"}
-              </button>
-            </>
-          )}
+          <button
+            onClick={onClose}
+            className="flex-1 px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300"
+          >
+            Close
+          </button>
           <button
             onClick={() => onDelete(payment._id)}
             disabled={actionLoading}
-            className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl font-semibold hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Trash2 className="w-5 h-5" />
-            Delete
+            {actionLoading ? "Deleting..." : "Delete"}
           </button>
         </div>
       </motion.div>
@@ -824,7 +696,14 @@ const PaymentModal = ({
   );
 };
 
-export default AdminDonations;
+// Wrap with ErrorBoundary for crash protection
+const AdminDonationsWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <AdminDonations />
+  </ErrorBoundary>
+);
+
+export default AdminDonationsWithErrorBoundary;
 
 // import { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
