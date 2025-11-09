@@ -1,6 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { uploadResource, getResources, downloadResource } from "../api/resourceService";
+import {
+  uploadResource,
+  getResources,
+  downloadResource,
+} from "../api/resourceService";
 import { useAuth } from "../context/auth-context";
 import BG_LOCAL from "../assets/photo_2025-10-28_16-54-40.jpg";
 
@@ -15,7 +19,7 @@ const COURSE_CATEGORIES = [
   "CoC",
 ];
 
-const KNOWN_CATEGORIES = ["All", ...COURSE_CATEGORIES];
+const KNOWN_CATEGORIES = COURSE_CATEGORIES;
 
 const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB in bytes
 
@@ -72,7 +76,7 @@ const FormatIcon = ({ ext }) => {
 
 const Resources = () => {
   const { user } = useAuth();
-  const [active, setActive] = useState("All");
+  const [active, setActive] = useState("");
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
@@ -128,17 +132,11 @@ const Resources = () => {
     }, 3000);
   };
 
-  const categories = useMemo(() => {
-    const fromData = Array.from(
-      new Set(resources.map((r) => r.category))
-    ).filter(Boolean);
-    const merged = ["All", ...fromData];
-    // Ensure known list presence/order
-    return KNOWN_CATEGORIES.filter((c) => c === "All" || merged.includes(c));
-  }, [resources]);
+  // Show all known categories immediately, don't wait for resources to load
+  const categories = KNOWN_CATEGORIES;
 
   const filtered = useMemo(() => {
-    if (active === "All") return resources;
+    if (!active) return [];
     return resources.filter((r) => r.category === active);
   }, [active, resources]);
 
@@ -147,13 +145,13 @@ const Resources = () => {
       showToast("Please login to download", "error");
       return;
     }
-    
+
     try {
       setDownloading(resourceId); // Set downloading state
       showToast("Preparing download...", "info");
-      
+
       const result = await downloadResource(resourceId, filename);
-      
+
       if (result.success) {
         showToast("Download started successfully!", "success");
       } else {
@@ -489,9 +487,13 @@ const Resources = () => {
 
                     <div className="mt-5">
                       <motion.button
-                        whileHover={{ scale: downloading === item.id ? 1 : 1.03 }}
+                        whileHover={{
+                          scale: downloading === item.id ? 1 : 1.03,
+                        }}
                         whileTap={{ scale: downloading === item.id ? 1 : 0.98 }}
-                        onClick={() => handleDownload(item.id, item.file || item.title)}
+                        onClick={() =>
+                          handleDownload(item.id, item.file || item.title)
+                        }
                         disabled={downloading === item.id}
                         className={`w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-white transition-all duration-300 ${
                           downloading === item.id
@@ -550,8 +552,8 @@ const Resources = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Loading state */}
-        {loading && (
+        {/* Loading state - Only show when category is selected */}
+        {loading && active && (
           <div className="mt-14 grid place-items-center text-center text-gray-600">
             <div className="w-14 h-14 rounded-2xl bg-white shadow ring-1 ring-gray-100 grid place-items-center">
               <div className="w-8 h-8 border-4 border-gray-300 border-t-mgsa-accent rounded-full animate-spin" />
@@ -560,8 +562,67 @@ const Resources = () => {
           </div>
         )}
 
-        {/* Empty state */}
-        {!loading && filtered.length === 0 && (
+        {/* Empty state - No category selected - Show immediately, minimized */}
+        {!active && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="mt-8 max-w-xl mx-auto px-4"
+          >
+            <div className="relative overflow-hidden rounded-2xl border border-mgsa-accent/30 bg-gradient-to-br from-white/95 to-mgsa-accent/5 backdrop-blur-sm shadow-lg p-6">
+              {/* Minimized background accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-mgsa-accent/8 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+
+              <div className="relative z-10 text-center space-y-3">
+                {/* Compact Icon */}
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-mgsa-accent to-mgsa-accentDark shadow-md shadow-mgsa-accent/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6 text-white"
+                  >
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+                  </svg>
+                </div>
+
+                {/* Compact Title */}
+                <h3 className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-mgsa-accent to-mgsa-accentDark">
+                  Select a Course Category
+                </h3>
+
+                {/* Compact Description */}
+                <p className="text-gray-600 text-sm leading-snug max-w-sm mx-auto">
+                  Choose a course above to explore study materials and resources
+                </p>
+
+                {/* Compact arrow */}
+                <motion.div
+                  animate={{ y: [-3, 3, -3] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-mgsa-accent inline-block"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path d="M12 4l-8 8h5v8h6v-8h5z" />
+                  </svg>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Empty state - Category selected but no resources */}
+        {!loading && active && filtered.length === 0 && (
           <div className="mt-14 grid place-items-center text-center text-gray-600">
             <div className="w-14 h-14 rounded-2xl bg-white shadow ring-1 ring-gray-100 grid place-items-center">
               <svg
@@ -573,7 +634,7 @@ const Resources = () => {
                 <path d="M4 4h16v14H5.17L4 19.17Zm2 2v10h12V6ZM6 20h14v2H6Z" />
               </svg>
             </div>
-            <p className="mt-3">No resources found for this category</p>
+            <p className="mt-3">No resources found for {active}</p>
           </div>
         )}
 
