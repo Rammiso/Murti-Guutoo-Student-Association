@@ -81,7 +81,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#0A0A0A] text-white overflow-x-hidden">
+    <div className="relative flex flex-col min-h-screen bg-[#0A0A0A] text-white overflow-x-hidden max-w-full">
       {/* Animated particles background */}
       <canvas
         ref={canvasRef}
@@ -91,10 +91,10 @@ const About = () => {
       />
 
       {/* Gradient accents */}
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-[#22C55E]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-[#16A34A]/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-[#22C55E]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none overflow-hidden" />
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-[#16A34A]/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none overflow-hidden" />
 
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full max-w-full overflow-x-hidden">
         {/* Hero Banner */}
         <section className="relative overflow-hidden w-full">
           <div className="relative z-10">
