@@ -26,6 +26,7 @@ import ANAS from "../assets/Profile_Pictures/anas.png";
 import ABDUNASIR from "../assets/Profile_Pictures/abdunasir.png";
 import YONAS from "../assets/Profile_Pictures/abel.png";
 import NADHI from "../assets/Profile_Pictures/Nadhi.jpg";
+import YIHUNE from "../assets/Profile_Pictures/Yihune.jpg";
 const About = () => {
   const { user } = useAuth();
   const canvasRef = useRef(null);
@@ -501,7 +502,7 @@ const About = () => {
                 {
                   name: "Yihune Belay",
                   role: "Frontend & Backend Developer",
-                  photo: "https://i.pravatar.cc/300?img=33",
+                  photo: YIHUNE,
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
