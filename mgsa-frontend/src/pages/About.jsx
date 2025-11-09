@@ -25,6 +25,7 @@ import MUSAB from "../assets/Profile_Pictures/Musab.jpg";
 import ANAS from "../assets/Profile_Pictures/anas.png";
 import ABDUNASIR from "../assets/Profile_Pictures/abdunasir.png";
 import YONAS from "../assets/Profile_Pictures/abel.png";
+import NADHI from "../assets/Profile_Pictures/Nadhi.jpg";
 const About = () => {
   const { user } = useAuth();
   const canvasRef = useRef(null);
@@ -516,9 +517,9 @@ const About = () => {
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
-                  name: "Nadhi Amayu",
+                  name: "Nadhi Jemal",
                   role: "Frontend & Backend Developer",
-                  photo: "https://i.pravatar.cc/300?img=54",
+                  photo: NADHI,
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
