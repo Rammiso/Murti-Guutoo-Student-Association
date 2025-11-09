@@ -95,8 +95,8 @@ const About = () => {
       />
 
       {/* Gradient accents */}
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-[#22C55E]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none overflow-hidden" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-[#16A34A]/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none overflow-hidden" />
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-[#22C55E]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-[#16A34A]/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-full overflow-x-hidden">
         {/* Hero Banner */}

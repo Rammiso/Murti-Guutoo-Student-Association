@@ -98,9 +98,9 @@ const PaymentForm = () => {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#111827] text-white overflow-x-hidden max-w-full">
       {/* Background Effects */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#111827] pointer-events-none overflow-hidden" />
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-emerald-400/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none overflow-hidden" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-cyan-400/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none overflow-hidden" />
+      <div className="fixed inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#111827] pointer-events-none" />
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-emerald-400/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-cyan-400/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
       {/* Subtle floating particles */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/4 left-10 w-2 h-2 bg-emerald-400/40 rounded-full animate-pulse" />
