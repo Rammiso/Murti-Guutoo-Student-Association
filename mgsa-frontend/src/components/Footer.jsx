@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram, Linkedin, Send } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Send } from "lucide-react";
 import logo from "../assets/logo-updated.png";
+
+const TiktokIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    stroke="none"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M14.5 2.25v11.95c0 2.87-2.32 5.2-5.18 5.2-2.61 0-4.72-2.1-4.72-4.7s2.11-4.7 4.72-4.7c.33 0 .65.03.96.11V7.88a8.2 8.2 0 0 0-1-.06c-3.6 0-6.54 2.92-6.54 6.51s2.94 6.51 6.54 6.51c3.74 0 6.78-3.05 6.78-6.8V9.37c1.23.84 2.7 1.32 4.3 1.32V7.03c-1.58 0-3.01-.52-4.11-1.39-1.07-.85-1.75-2.02-1.75-3.39z" />
+  </svg>
+);
 
 const links = [
   { to: "/", label: "Home" },
@@ -149,15 +162,23 @@ const Footer = () => {
 
               <div className="pt-2 flex items-center gap-3">
                 {[
-                  { n: "facebook", Icon: Facebook },
-                  { n: "twitter", Icon: Twitter },
-                  { n: "instagram", Icon: Instagram },
-                  { n: "linkedin", Icon: Linkedin },
+                  {
+                    n: "facebook",
+                    Icon: Facebook,
+                    href: "https://www.facebook.com/Murtigutoharamaya",
+                  },
                   { n: "telegram", Icon: Send },
-                ].map(({ n, Icon }) => (
+                  {
+                    n: "linkedin",
+                    Icon: Linkedin,
+                    href: "https://www.linkedin.com/company/murti-guutoo-students-association-mgsa/",
+                  },
+                  { n: "tiktok", Icon: TiktokIcon },
+                  { n: "instagram", Icon: Instagram },
+                ].map(({ n, Icon, href }) => (
                   <motion.a
                     key={n}
-                    href="#"
+                    href={href ?? "#"}
                     whileHover={{ scale: 1.1, rotate: 6 }}
                     whileTap={{ scale: 0.96 }}
                     className="bg-white/10 hover:bg-[#22C55E]/20 text-[#22C55E] border border-[#22C55E]/30 rounded-full w-10 h-10 flex items-center justify-center transition-all hover:shadow-lg hover:shadow-[#22C55E]/40"
