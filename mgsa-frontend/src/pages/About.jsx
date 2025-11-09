@@ -508,7 +508,7 @@ const About = () => {
                   portfolio: "https://portfolio-placeholder.com",
                 },
                 {
-                  name: "Ezedin Jemal",
+                  name: "Ezedin Aliyi",
                   role: "Frontend & Backend Developer",
                   photo: EZEDIN,
                   portfolio: "https://portfolio-placeholder.com",

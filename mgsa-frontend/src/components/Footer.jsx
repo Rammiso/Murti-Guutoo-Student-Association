@@ -207,7 +207,7 @@ const Footer = () => {
                     url: "https://portfolio-placeholder.com",
                   },
                   {
-                    name: "Ezedin Jemal",
+                    name: "Ezedin Aliyi",
                     url: "https://portfolio-placeholder.com",
                   },
                   {
