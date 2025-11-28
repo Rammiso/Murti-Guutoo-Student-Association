@@ -75,7 +75,7 @@ const FormatIcon = ({ ext }) => {
 };
 
 const Resources = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [active, setActive] = useState("");
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -106,6 +106,7 @@ const Resources = () => {
             category: r.course, // Map 'course' to 'category'
             file: r.fileName,
             size: (r.fileSize / (1024 * 1024)).toFixed(2) + " MB",
+            downloads: r.downloads,
             uploadDate: new Date(r.uploadedAt).toLocaleDateString(),
           }));
           setResources(mappedResources);
@@ -481,6 +482,12 @@ const Resources = () => {
                               📦 {item.size}
                             </span>
                           )}
+                          {item.downloads !== undefined && (
+                            <span className="px-2 py-0.5 rounded-full bg-green-50 text-green-700 ring-1 ring-green-100">
+                              ⬇️ {item.downloads}{" "}
+                              {item.downloads === 1 ? "download" : "downloads"}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -638,8 +645,8 @@ const Resources = () => {
           </div>
         )}
 
-        {/* Upload Section - Only for logged-in users - At Bottom */}
-        {user && (
+        {/* Upload Section - Only for Admin users - At Bottom */}
+        {isAdmin && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

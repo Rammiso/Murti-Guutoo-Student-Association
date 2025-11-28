@@ -38,7 +38,7 @@ export const registerValidation = (data) => {
       .required()
       .messages({
         "any.only":
-          "Zone must be either West Hararghe or East Hararghe or Dire Dawa",
+          "Zone must be either West Hararghe or East Hararghe or Dire Dawa or Harar",
         "string.empty": "Zone is required",
       }),
     woreda: Joi.string().required().messages({

@@ -60,10 +60,13 @@ export const uploadResource = async (formData, onUploadProgress) => {
     };
   } catch (error) {
     console.error("Upload error:", error);
-    
+
     // Extract error message from backend response
-    const errorMessage = error.response?.data?.message || error.message || "Upload failed. Please try again.";
-    
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Upload failed. Please try again.";
+
     return {
       success: false,
       message: errorMessage,
@@ -100,6 +103,7 @@ export const getResources = async (filters = {}) => {
       uploadedBy: file.uploadedBy,
       uploadedAt: file.createdAt,
       approved: file.approved,
+      downloads: file.downloads || 0,
     }));
 
     console.log("Resources fetched:", resources.length);
@@ -111,9 +115,12 @@ export const getResources = async (filters = {}) => {
     };
   } catch (error) {
     console.error("Fetch resources error:", error);
-    
-    const errorMessage = error.response?.data?.message || error.message || "Failed to fetch resources";
-    
+
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to fetch resources";
+
     return {
       success: false,
       message: errorMessage,
@@ -176,22 +183,29 @@ export const downloadResource = async (id, filename = "download") => {
 
     // Backend returns JSON with downloadUrl (Cloudinary URL)
     if (response.data && response.data.success && response.data.downloadUrl) {
-      const { downloadUrl, filename: serverFilename, fileType, mimeType } = response.data;
-      
+      const {
+        downloadUrl,
+        filename: serverFilename,
+        fileType,
+        mimeType,
+      } = response.data;
+
       console.log(`☁️ Cloudinary URL received: ${downloadUrl}`);
       console.log(`📄 Filename: ${serverFilename}`);
       console.log(`📋 Type: ${fileType} (${mimeType})`);
 
       // Fetch the file from Cloudinary
       const fileResponse = await fetch(downloadUrl);
-      
+
       if (!fileResponse.ok) {
-        throw new Error(`Failed to fetch file from Cloudinary: ${fileResponse.status}`);
+        throw new Error(
+          `Failed to fetch file from Cloudinary: ${fileResponse.status}`
+        );
       }
 
       // Get the blob
       const blob = await fileResponse.blob();
-      
+
       console.log(`📦 File fetched, size: ${(blob.size / 1024).toFixed(2)} KB`);
 
       // Create download link
@@ -201,10 +215,10 @@ export const downloadResource = async (id, filename = "download") => {
       link.setAttribute("download", serverFilename || filename);
       link.style.display = "none";
       document.body.appendChild(link);
-      
+
       // Trigger download
       link.click();
-      
+
       // Cleanup
       setTimeout(() => {
         document.body.removeChild(link);
@@ -222,13 +236,12 @@ export const downloadResource = async (id, filename = "download") => {
 
     // If response doesn't match expected format
     throw new Error("Invalid response format from server");
-
   } catch (error) {
     console.error("❌ Download error:", error);
-    
+
     // Handle specific error cases
     let errorMessage = "Download failed. Please try again.";
-    
+
     if (error.response) {
       // Backend returned an error response
       if (error.response.status === 404) {
@@ -247,9 +260,9 @@ export const downloadResource = async (id, filename = "download") => {
       // Something else happened
       errorMessage = error.message || errorMessage;
     }
-    
+
     console.error(`❌ Download failed: ${errorMessage}`);
-    
+
     return {
       success: false,
       message: errorMessage,

@@ -1,11 +1,3 @@
-/**
- * BACKEND EXAMPLE FOR PAYMENT UI
- * 
- * This is what you need on the server side to handle
- * the payment form submissions from PaymentForm.tsx
- * 
- * Tech Stack: Node.js + Express + MongoDB
- */
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -319,18 +311,4 @@ app.listen(PORT, () => {
   console.log(`📡 API: http://localhost:${PORT}/api/v1/payments`);
 });
 
-// ============================================
-// DEPENDENCIES NEEDED
-// ============================================
-/*
-npm install express mongoose cors
 
-package.json:
-{
-  "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^7.0.3",
-    "cors": "^2.8.5"
-  }
-}
-*/
