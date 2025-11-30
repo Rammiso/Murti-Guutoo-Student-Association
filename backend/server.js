@@ -22,7 +22,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://murti-guutoo-student-association-ze.vercel.app",
+  "https://murti-guutoo-student-association-v1.vercel.app",
 ];
 
 app.use(
