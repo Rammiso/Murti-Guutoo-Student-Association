@@ -48,7 +48,6 @@ const ZONES = {
     "Girawa",
     "Gola Oda",
     "Meyu",
-
   ],
   "Dire Dawa": ["Dire Dawa City"],
   Harar: [
@@ -64,9 +63,17 @@ const ZONES = {
   ],
 };
 
+10;
+
 const COLLEGES = {
   FRESHMAN: ["Social Science", "Natural Science"],
-  "Business & Economics": ["Accounting", "Economics", "Management"],
+  "Business & Economics": [
+    "Management",
+    "Economics",
+    "Accounting and Finance",
+    "Public Administration and Development Management",
+    "Cooperative",
+  ],
   "Computing & Informatics": [
     "Computer Science",
     "Information Systems",
@@ -74,14 +81,33 @@ const COLLEGES = {
     "Information Technology",
     "Software Engineering",
   ],
+  "Social Sciences & Humanities": [
+    "Sociology",
+    "English Language and Literature",
+    "Journalism and Mass Communication",
+    "Geography and Environmental Studies",
+    "Urban Planning",
+    "Gender and Development",
+    "History and Heritage Management",
+    "Tourism Development and Hotel Management",
+    "Afan Oromo Communication and Literature",
+  ],
   "Agriculture & Environmental Sciences": [
     "Agro-Economics",
     "Agro-Business",
     "Plant Sciences",
+    "Animal Sciences",
+    "Natural Resource Management",
+    "Rural development and Agricultural Extension",
     "Environmental Science",
   ],
+  "College of Education and Behavioral Science": [
+    "Adult Education and Community Development",
+    "Educational Planning and Management",
+    "Special Needs and Inclusive Education",
+    "Psychology",
+  ],
 
-  "Social Sciences & Humanities": ["Sociology", "Psychology", "English"],
   Law: ["LL.B"],
   "Veterinary Medicine": ["Veterinary Medicine"],
   "Natural & Computational Sciences": [
@@ -89,6 +115,7 @@ const COLLEGES = {
     "Physics",
     "Chemistry",
     "Biology",
+    "Molecular Biology and Biotechnology",
   ],
 
   "Haramaya Institute of Technology": [
@@ -96,6 +123,7 @@ const COLLEGES = {
     "Electrical Engineering",
     "Mechanical Engineering",
   ],
+  "Sport Science Academy": ["Sport Science"],
 };
 
 const YEARS = ["Freshman", "2nd", "3rd", "4th", "5th"];
