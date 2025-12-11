@@ -503,13 +503,13 @@ const About = () => {
                 },
                 {
                   name: "Yihune Belay",
-                  role: "Frontend & Backend Developer",
+                  role: "Full-Stack Developer",
                   photo: YIHUNE,
-                  portfolio: "https://portfolio-placeholder.com",
+                  portfolio: "https://yihunebelayportfolio.onrender.com",
                 },
                 {
                   name: "Ezedin Aliyi",
-                  role: "Frontend & Backend Developer",
+                  role: "Full-Stack Developer",
                   photo: EZEDIN,
                   portfolio: "https://portfolio-placeholder.com",
                 },
