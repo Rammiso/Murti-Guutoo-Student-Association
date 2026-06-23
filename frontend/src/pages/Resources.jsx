@@ -8,6 +8,7 @@ import {
 } from "../api/resourceService";
 import { useAuth } from "../context/auth-context";
 import BG_LOCAL from "../assets/photo_2025-10-28_16-54-40.jpg";
+import { resources as dummyResources } from "../data/dummyData";
 
 const COURSE_CATEGORIES = [
   "Mathematics",
@@ -93,32 +94,50 @@ const Resources = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [downloading, setDownloading] = useState(null); // Track which file is downloading
 
-  // Fetch resources on mount from backend API
+  // Fetch resources on mount from backend API, fall back to dummy data
   useEffect(() => {
     const fetchResources = async () => {
       try {
         setLoading(true);
         const result = await getResources();
 
-        if (result.success) {
-          // Map backend format to component format
+        if (result.success && result.resources?.length > 0) {
           const mappedResources = result.resources.map((r) => ({
             id: r.id,
             title: r.title,
-            category: r.course, // Map 'course' to 'category'
+            category: r.course,
             file: r.fileName,
             size: (r.fileSize / (1024 * 1024)).toFixed(2) + " MB",
             downloads: r.downloads,
             uploadDate: new Date(r.uploadedAt).toLocaleDateString(),
           }));
           setResources(mappedResources);
-          console.log("Resources loaded:", mappedResources.length);
         } else {
-          showToast("Failed to load resources", "error");
+          // Fall back to local dummy data
+          const mapped = dummyResources.map((r) => ({
+            id: r.id,
+            title: titleFromPath(r.file),
+            category: r.category,
+            file: r.file.replace("./", "/"),
+            size: "—",
+            downloads: 0,
+            isDummy: true,
+          }));
+          setResources(mapped);
         }
       } catch (error) {
         console.error("Error fetching resources:", error);
-        showToast("Error loading resources", "error");
+        // Fall back to local dummy data on error
+        const mapped = dummyResources.map((r) => ({
+          id: r.id,
+          title: titleFromPath(r.file),
+          category: r.category,
+          file: r.file.replace("./", "/"),
+          size: "—",
+          downloads: 0,
+          isDummy: true,
+        }));
+        setResources(mapped);
       } finally {
         setLoading(false);
       }
@@ -150,21 +169,26 @@ const Resources = () => {
     }
 
     try {
-      setDownloading(resourceId); // Set downloading state
+      setDownloading(resourceId);
       showToast("Preparing download...", "info");
 
-      const result = await downloadResource(resourceId, filename);
-
-      if (result.success) {
-        showToast("Download started successfully!", "success");
+      const item = resources.find((r) => r.id === resourceId);
+      if (item?.isDummy) {
+        window.open(item.file, "_blank");
+        showToast("Download started!", "success");
       } else {
-        showToast(result.message || "Download failed", "error");
+        const result = await downloadResource(resourceId, filename);
+        if (result.success) {
+          showToast("Download started successfully!", "success");
+        } else {
+          showToast(result.message || "Download failed", "error");
+        }
       }
     } catch (error) {
       console.error("Download error:", error);
       showToast("Download failed. Please try again.", "error");
     } finally {
-      setDownloading(null); // Clear downloading state
+      setDownloading(null);
     }
   };
 
