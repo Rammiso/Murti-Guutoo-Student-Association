@@ -313,8 +313,8 @@ router.post("/upload", protect, upload.single("file"), async (req, res) => {
   }
 });
 
-// ✅ GET ALL FILES
-router.get("/", protect, async (req, res) => {
+// ✅ GET ALL FILES (public — no auth required to browse)
+router.get("/", async (req, res) => {
   try {
     const { course, department, fileType, approved } = req.query;
     const filter = {};
