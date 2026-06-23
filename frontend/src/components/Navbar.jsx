@@ -28,7 +28,7 @@ const Navbar = () => {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 12 }).map((_, i) => ({
+      Array.from({ length: 6 }).map((_, i) => ({
         id: i,
         top: Math.random() * 100,
         left: Math.random() * 100,

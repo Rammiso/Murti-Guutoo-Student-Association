@@ -44,7 +44,6 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #bee9e0 100%);
-  background-attachment: fixed;
   overflow-x: hidden;
 }
 

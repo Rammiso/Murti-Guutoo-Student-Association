@@ -4,9 +4,7 @@ import { useAuth } from "../context/auth-context";
 import HERO_LOCAL from "../assets/photo_2025-10-28_16-54-40.jpg";
 import { BookOpen, Users, Bell, Award, CalendarDays, Gift } from "lucide-react";
 import LOGO from "../assets/logo-updated.png";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 // Gallery images for feature cards
 import FEATURE_IMG1 from "../assets/Gallery/IMG_9259.JPG";
@@ -15,65 +13,11 @@ import FEATURE_IMG3 from "../assets/Gallery/IMG_9370.JPG";
 import FEATURE_IMG4 from "../assets/Gallery/IMG_9371.JPG";
 import FEATURE_IMG5 from "../assets/Gallery/IMG_9255.JPG";
 import FEATURE_IMG6 from "../assets/Gallery/Picture-1.png";
-const HERO_BG =
-  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80";
-const STUDENT_IMG =
-  "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1000&q=80";
 
 const Home = () => {
   const { user } = useAuth();
-
-  // Initialize particles
-  const particlesInit = useCallback(async (engine) => {
-    await loadSlim(engine);
-  }, []);
-
-  // Section-level particle config (background)
   const prefersReducedMotion = useReducedMotion();
-  const [isDesktop, setIsDesktop] = useState(false);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsDesktop(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  const enableParticles = isDesktop && !prefersReducedMotion;
-
-  const sectionParticlesConfig = {
-    particles: {
-      number: { value: 18, density: { enable: true, value_area: 1000 } },
-      color: { value: ["#22C55E", "#67E8F9"] },
-      shape: { type: "circle" },
-      opacity: {
-        value: 0.25,
-        random: true,
-        anim: { enable: false, speed: 0.5, opacity_min: 0.1, sync: false },
-      },
-      size: {
-        value: 2.5,
-        random: true,
-      },
-      line_linked: { enable: false },
-      move: {
-        enable: true,
-        speed: 0.5,
-        direction: "none",
-        random: true,
-        straight: false,
-        out_mode: "out",
-        bounce: false,
-      },
-    },
-    interactivity: {
-      events: { onhover: { enable: false }, onclick: { enable: false } },
-    },
-    retina_detect: true,
-  };
-
-  // Card-level particle config (foreground overlay)
   const features = useMemo(
     () => [
       {
@@ -255,30 +199,12 @@ const Home = () => {
             }}
           />
           <div
-            className="particle"
-            style={{
-              top: "28%",
-              left: "36%",
-              animationDelay: "2s",
-              animationDuration: "14s",
-            }}
-          />
-          <div
-            className="particle accent lg"
+            className="particle accent"
             style={{
               top: "46%",
               left: "18%",
               animationDelay: "1s",
               animationDuration: "12s",
-            }}
-          />
-          <div
-            className="particle sm"
-            style={{
-              top: "62%",
-              left: "8%",
-              animationDelay: "3s",
-              animationDuration: "15s",
             }}
           />
           <div
@@ -288,15 +214,6 @@ const Home = () => {
               left: "78%",
               animationDelay: "1.5s",
               animationDuration: "12.5s",
-            }}
-          />
-          <div
-            className="particle lg"
-            style={{
-              top: "70%",
-              left: "66%",
-              animationDelay: "2.5s",
-              animationDuration: "13.5s",
             }}
           />
           <div
@@ -313,18 +230,6 @@ const Home = () => {
 
       {/* About teaser / Features */}
       <section className="relative py-16 px-4 md:px-8 bg-[#0B0E14] overflow-hidden">
-        {/* Section-level particle background */}
-        {enableParticles && (
-          <div className="absolute inset-0 z-0">
-            <Particles
-              id="section-particles"
-              init={particlesInit}
-              options={sectionParticlesConfig}
-              className="absolute inset-0"
-            />
-          </div>
-        )}
-
         {/* Dark neon decorative background */}
         <div className="pointer-events-none absolute inset-0 opacity-20 z-0">
           <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#22C55E]/30 blur-3xl rounded-full" />
@@ -387,38 +292,12 @@ const Home = () => {
                 <div className="absolute inset-0 overflow-hidden">
                   <img
                     src={f.bgImage}
-                    srcSet={`${f.bgImage} 1x`}
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     alt={f.bgAlt}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover blur-sm opacity-30 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700"
                   />
                 </div>
-
-                {/* Card-level particle overlay */}
-                {enableParticles && (
-                  <div className="absolute inset-0 z-0">
-                    <Particles
-                      id={`card-particles-${f.title}`}
-                      init={particlesInit}
-                      options={{
-                        particles: {
-                          number: { value: 6, density: { enable: true, value_area: 800 } },
-                          color: { value: ["#22C55E", "#67E8F9"] },
-                          shape: { type: "circle" },
-                          opacity: { value: 0.18, random: true },
-                          size: { value: 1.2, random: true },
-                          line_linked: { enable: false },
-                          move: { enable: true, speed: 0.2, random: true, out_mode: "out" },
-                        },
-                        interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } } },
-                        retina_detect: true,
-                      }}
-                      className="absolute inset-0"
-                    />
-                  </div>
-                )}
 
                 {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[#22C55E]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

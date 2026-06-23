@@ -299,7 +299,7 @@ const Gallery = () => {
         className="particles fixed inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        {Array.from({ length: 15 }).map((_, i) => (
+        {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
             className="particle accent"

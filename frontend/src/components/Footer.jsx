@@ -49,25 +49,13 @@ const Footer = () => {
       <div className="relative bg-gradient-to-b from-[#0A0A0A] to-[#111827] border-t border-[#22C55E]/20 overflow-hidden">
         {/* Animated particles */}
         <div className="pointer-events-none absolute inset-0">
-          {[...Array(14)].map((_, i) => (
-            <motion.span
+          {[...Array(6)].map((_, i) => (
+            <span
               key={i}
-              className="absolute block w-1 h-1 bg-white/50 rounded-full"
+              className="absolute block w-0.5 h-0.5 bg-white/20 rounded-full"
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                boxShadow: "0 0 6px rgba(255,255,255,0.6)",
-              }}
-              animate={{
-                y: [0, -10, 0],
-                x: [0, 6, 0],
-                opacity: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 6 + Math.random() * 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 0.2,
               }}
             />
           ))}
