@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   uploadResource,
@@ -75,6 +76,7 @@ const FormatIcon = ({ ext }) => {
 };
 
 const Resources = () => {
+  const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
   const [active, setActive] = useState("");
   const [resources, setResources] = useState([]);
@@ -143,7 +145,7 @@ const Resources = () => {
 
   const handleDownload = async (resourceId, filename) => {
     if (!user) {
-      showToast("Please login to download", "error");
+      navigate("/login");
       return;
     }
 
