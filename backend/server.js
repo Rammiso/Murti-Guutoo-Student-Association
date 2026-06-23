@@ -58,6 +58,11 @@ app.use(express.json({ limit: "10mb" })); // Increased limit for payment screens
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // Example: Express
 
+// Public health check endpoint (no auth required — for UptimeRobot)
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ success: true });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", passwordRoutes); // Password reset routes under /api/auth
 app.use("/api/admin", adminRoutes);
