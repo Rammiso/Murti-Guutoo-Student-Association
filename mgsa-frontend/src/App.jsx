@@ -63,22 +63,8 @@ const AnimatedMain = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/gallery"
-            element={
-              <ProtectedRoute>
-                <Gallery />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/resources"
-            element={
-              <ProtectedRoute>
-                <Resources />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/resources" element={<Resources />} />
           <Route
             path="/profile"
             element={
